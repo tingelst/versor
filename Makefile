@@ -36,7 +36,7 @@ endif
 ifeq ($(C14),1)
 CXX += -std=c++14  $(USRFLAGS) 
 else
-CXX += -std=c++11  $(USRFLAGS)
+CXX += -std=c++0x  $(USRFLAGS)
 endif
 
 ifeq ($(STDLIB),1)
