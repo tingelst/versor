@@ -3,7 +3,7 @@ RPI = 0
 PORT = 22
 HOST = pi-la
 NAME = main    
-GFX=1
+GFX=0
 PLATFORM=$(shell uname)
 
 ifeq ($(PLATFORM),Linux)
@@ -97,9 +97,9 @@ VPATH = $(SRC_DIR):\
 EXEC = tests/%.cpp examples/%.cpp
 
 OBJ = vsr_cga3D_op.o vsr_cga3D_frame.o vsr_cga3D_xf.o vsr_cga3D_cubicLattice.o
-ifneq ($(RPI),1)
-OBJ += vsr_cga3D_draw.o vsr_cga3D_interface.o gl2ps.o
-endif
+#ifneq ($(RPI),1)
+#OBJ += vsr_cga3D_draw.o vsr_cga3D_interface.o gl2ps.o
+#endif
 
 OBJ_DIR = build/obj/
 LIB_DIR = build/lib/
