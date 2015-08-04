@@ -18,4 +18,4 @@ branches:
   only:
     - cleanup
 os:
-  - linux
+  - osx
