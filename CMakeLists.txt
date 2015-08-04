@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #CMAKE FOR The Versor Geometric Algebra Mathematics Library 
 
 #VERSION
