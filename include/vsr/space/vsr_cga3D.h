@@ -1,7 +1,7 @@
-#ifndef VSR_CGA_3D_INCLUDED
-#define VSR_CGA_3D_INCLUDED  
+#ifndef VERSOR_VSR_SPACE_CGA3D_H_
+#define VERSOR_VSR_SPACE_CGA3D_H_
 
 #include "vsr_cga3D_op.h"
 //#include "vsr_cga3D_funcs.h"
- 
+
 #endif

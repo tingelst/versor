@@ -18,11 +18,11 @@
 
 
 
-#ifndef  vsr_app_INC
-#define  vsr_app_INC
+#ifndef  VERSOR_VSR_VSR_APP_H_
+#define  VERSOR_VSR_VSR_APP_H_
 
-#include "util/vsr_cga3D_app.h"
-#include "form/vsr_cga3D_frame.h"
-#include "form/vsr_field.h"
+#include <vsr/util/vsr_cga3D_app.h>
+#include <vsr/form/vsr_cga3D_frame.h>
+#include <vsr/form/vsr_field.h>
 
-#endif   /* ----- #ifndef vsr_app_INC  ----- */
+#endif
