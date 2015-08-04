@@ -16,7 +16,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U__STRICT_ANSI__ -nostdinc++ -O3 -ftemplate
 
 #PROJECT INCLUDE AND LINK
 include_directories(${PROJECT_SOURCE_DIR})
-include_directories(${PROJECT_SOURCE_DIR}/vsr/)
+include_directories(${PROJECT_SOURCE_DIR}/inlude)
+include_directories(${PROJECT_SOURCE_DIR}/include/vsr/)
 
 file(GLOB core src/space/*.cpp)
 
@@ -83,5 +84,3 @@ endforeach()
 set_property(GLOBAL PROPERTY VSR_LIBRARIES ${vsr_libraries})
 set_property(GLOBAL PROPERTY VSR_INCLUDE_DIR "${inc_dirs}")
 set_property(GLOBAL PROPERTY VSR_LINK_DIR "${link_dirs}")
-
-
