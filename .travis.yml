@@ -23,6 +23,7 @@ script:
 
 branches:
   only:
+    - master
     - cleanup
 os:
   - linux
