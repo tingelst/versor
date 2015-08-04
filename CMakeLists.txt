@@ -11,10 +11,13 @@ endif(COMMAND cmake_policy)
 #PROJECT
 project(VERSOR)
 
+
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -U__STRICT_ANSI__ -O3 -ftemplate-depth-1200 -Wno-switch -Wno-deprecated-declarations -Wno-int-to-pointer-cast")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U__STRICT_ANSI__ -nostdinc++ -O3 -ftemplate-depth-1200 -Wno-switch -Wno-int-to-pointer-cast") 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U__STRICT_ANSI__ -nostdinc++ -O3 -ftemplate-depth-1200 -Wno-switch -Wno-int-to-pointer-cast")
+
+find_package(Catch REQUIRED)
 
 #PROJECT INCLUDE AND LINK
 include_directories(${PROJECT_SOURCE_DIR})
@@ -65,8 +68,7 @@ if(${BUILD_GRAPHICS})
 
 endif()
 
-if(${RUN_TESTS})
-  find_package(Catch REQUIRED)
+if(${ENABLE_TESTS})
   include_directories(${CATCH_INCLUDE_DIR})
   enable_testing(true)
   #CORE TEST TARGETS
