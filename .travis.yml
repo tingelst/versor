@@ -12,10 +12,10 @@ script:
   - cd build
   - cmake ..
   - make -j4
+  - make test
 
 branches:
   only:
     - cleanup
 os:
   - linux
-  - osx

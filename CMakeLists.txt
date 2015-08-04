@@ -11,6 +11,8 @@ endif(COMMAND cmake_policy)
 #PROJECT
 project(VERSOR)
 
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -U__STRICT_ANSI__ -O3 -ftemplate-depth-1200 -Wno-switch -Wno-deprecated-declarations -Wno-int-to-pointer-cast")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U__STRICT_ANSI__ -nostdinc++ -O3 -ftemplate-depth-1200 -Wno-switch -Wno-int-to-pointer-cast") 
 
@@ -24,16 +26,10 @@ file(GLOB core src/space/*.cpp)
 add_library(vsr ${core})
 link_directories(${PROJECT_BINARY_DIR})
 
-#CORE TEST TARGETS
-set( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin )
-file(GLOB tests tests/*.cpp)
-foreach(filename ${tests})
-  get_filename_component(target ${filename} NAME_WE)
-  add_executable(${target} ${filename} )
-  target_link_libraries(${target} vsr )
-endforeach()
 
 set(vsr_libraries vsr)
+
+#set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 if(${BUILD_GRAPHICS})
   
@@ -67,6 +63,23 @@ if(${BUILD_GRAPHICS})
     target_link_libraries(${target} ${libraries})
   endforeach()
 
+endif()
+
+if(${RUN_TESTS})
+  find_package(Catch REQUIRED)
+  include_directories(${CATCH_INCLUDE_DIR})
+  enable_testing(true)
+  #CORE TEST TARGETS
+  file(GLOB tests RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} tests/*.cpp)
+  foreach(filename ${tests})
+    get_filename_component(target ${filename} NAME_WE)
+    add_executable(${target} ${filename} )
+    target_link_libraries(${target} vsr )
+    #Finally add it to test execution -
+    add_test(NAME ${target}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build/bin/${target} )
+  endforeach()
 endif()
 
 #PRINT DIRECTORIES
