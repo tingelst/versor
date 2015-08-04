@@ -22,11 +22,11 @@ minkowskian metric (i.e. diagonalized non-degenerate)
 
 */
 
-#ifndef SPLIT_H_INCLUDED
-#define SPLIT_H_INCLUDED
+#ifndef VERSOR_VSR_DETAIL_SPLIT_MET_H_
+#define VERSOR_VSR_DETAIL_SPLIT_MET_H_
 
-#include "vsr_xlists.h"
-#include "vsr_instructions.h"
+#include <vsr/detail/vsr_xlists.h>
+#include <vsr/detail/vsr_instructions.h>
 
 namespace vsr
 {
@@ -269,4 +269,4 @@ struct SplitOProd
 
 }  // vsr::
 
-#endif
+#endif  // VERSOR_VSR_DETAIL_SPLIT_MET_H_

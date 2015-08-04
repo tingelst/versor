@@ -22,8 +22,8 @@
  */
 
 
-#ifndef MV_H_INCLUDED
-#define MV_H_INCLUDED  
+#ifndef VERSOR_VSR_DETAIL_MULTIVECTOR_H_
+#define VERSOR_VSR_DETAIL_MULTIVECTOR_H_
 
 
 #include "vsr_algebra.h"  //<-- algebra implementation details (EGA, MGA, CGA)
@@ -566,10 +566,6 @@ template<bits::type N, typename T=VSR_PRECISION> using conformal_Mot = GAMot<con
 template<bits::type N, typename T=VSR_PRECISION> using conformal_Con = GACon<conformal<N,T>>;
 
 
-} //vsr::   
+} // vsr::
 
-#endif
-
-
-
-
+#endif // VERSOR_VSR_DETAIL_MULTIVECTOR_H_
