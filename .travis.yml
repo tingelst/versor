@@ -10,7 +10,7 @@ script:
   - git submodule update
   - mkdir -p build
   - cd build
-  - cmake ..
+  - cmake -D RUN_TESTS=ON ..
   - make -j4
   - make test
 
