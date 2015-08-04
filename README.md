@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/tingelst/versor.svg?branch=cleanup)](https://travis-ci.org/tingelst/versor)
+--
+
 <script type="text/javascript"
   src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
