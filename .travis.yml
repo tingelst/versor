@@ -1,0 +1,28 @@
+sudo: false
+
+language: cpp
+
+compiler:
+  - clang
+
+#addons:
+  #apt:
+    #packages:
+      #g++-4.9
+      #clang-3.6
+
+script:
+  - git submodule init
+  - git submodule update
+  - mkdir -p build
+  - cd build
+  #- cmake -D RUN_TESTS=ON ..
+  - cmake ..
+  - make -j4
+  #- make test
+
+branches:
+  only:
+    - cleanup
+os:
+  - linux
