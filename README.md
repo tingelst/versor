@@ -1,6 +1,6 @@
 CSS: scripts/style.css
 
-	 
+
 <script type="text/javascript"
   src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
@@ -19,7 +19,7 @@ A (fast, lightweight) Generic C++ library for Euclidean, Projective, and Conform
 ---
 ### Currently tested on Linux and Mac OS X ###
 
-[Homepage (versor.mat.ucsb.edu)](http://versor.mat.ucsb.edu) 
+[Homepage (versor.mat.ucsb.edu)](http://versor.mat.ucsb.edu)
 
 [Bibtex (for referencing this work in your paper)](http://versor.mat.ucsb.edu/bibtex.txt)
 
@@ -30,7 +30,7 @@ A (fast, lightweight) Generic C++ library for Euclidean, Projective, and Conform
 The headers generate optimized code at compile-time through template metaprogramming.  The core of the library
 is under 150kb, and supports arbitrary dimensions and metrics (limited by your compiler...).  
 
-The library can be used as a math-only, or as an application with built-in graphics.  Both OpenGL and OpeGLES draw routines are supported.   
+The library can be used as a math-only, or as an application with built-in graphics.  Both OpenGL and OpeGLES draw routines are supported.
 
 
 Developer: Pablo Colapinto  
@@ -51,10 +51,10 @@ Some major revisions have been enacted that change the API.
 * header folders **`/detail /space /form /draw`** and **`/util`** organize the various files
 
 ## CONTENTS: ##
-                               
-* [Quickstart](#quickstart)   
+
+* [Quickstart](#quickstart)
 * [Introduction](#introduction)
-* [Generators](#generators) 
+* [Generators](#generators)
 * [What the Point is](#whatthepointis)
 * [Basics](#basics)
 * [Gui](#gui)
@@ -65,7 +65,7 @@ Some major revisions have been enacted that change the API.
 
 [Download and Installation](http://versor.mat.ucsb.edu/INSTALL.html) 	| 	[Cheat Sheet](http://versor.mat.ucsb.edu/masters_appendix.pdf) 	| 	[Mailing List](http://lists.create.ucsb.edu/mailman/listinfo/versor) | [Master's Thesis](http://wolftype.com/versor/colapinto_masters_final_02.pdf) | [Presentation on Implementation Details](https://www.youtube.com/watch?v=W4p-e-g37tg)
 
-[versor.js](http://github.com/weshoke/versor.js) | [AlloSphere Research Group](http://www.allosphere.ucsb.edu/)          
+[versor.js](http://github.com/weshoke/versor.js) | [AlloSphere Research Group](http://www.allosphere.ucsb.edu/)
 
 
 	As long as algebra and geometry have been separated, their progress have been slow and their uses limited; but when these two sciences have been united, they have lent each mutual forces, and have marched together towards perfection.  
@@ -78,7 +78,7 @@ Some major revisions have been enacted that change the API.
 	-Sophie Germain
 
 	If you want to see, learn how to act
-	-Heinz von Foerster 
+	-Heinz von Foerster
 
 ## OTHER NICE SOFTWARE: ##
 * [Cinderella](http://www.cinderella.de/tiki-index.php) Standalone GA interface
@@ -95,45 +95,45 @@ QUICKSTART
 
 Please see also the [INSTALL](http://versor.mat.ucsb.edu/INSTALL.html) guide.  For this version you need C++11 support (gcc 4.7 or higher or clang 3.2 or higher)
 
-	git clone git://github.com/wolftype/versor.git 
- 
+	git clone git://github.com/wolftype/versor.git
+
 You'll want to initialize the submodules to build any graphics examples:
 
 	cd versor
 	git submodule init
 	git submodule update
-	
+
 To build with graphics capabilities
 
-	./buildAll.sh
+	./build_with_graphics.sh
 
-To build math only 
+To build math only
 
 	./build.sh
-     
+
 If this doesn't work, please consult the [Troubleshooting](#TROUBLESHOOTING) section below, email me, or post an issue on github.
 
 
 Use Cases
 ---
 
-1. A math library: 
+1. A math library:
 ---
 
 	#include "vsr.h"
 
 	using Vec = vsr::euclidean_vec<3,float>;  		//<-- A 3 dimensional euclidean vector defined over floats
 	using Biv = vsr::euclidean_bivector<3,float>;   //<-- A 3 dimensional bivector or "directed area element"
-	
+
 	int main(){
-		
+
 		auto v = Vec(1,2,3);		  			//<-- A 3D vector at coordinates 1,2,3;
-		
+
 		v.rotate( Biv::xy * .25 ).print();		//<-- Rotate the vector in the xy plane and print result
-		
+
 		return 0;
 	};
-	
+
 
 2. A stand-alone application (with window and gui)
 ---
@@ -150,7 +150,7 @@ While fully enabling arbitrary metric spaces, *Versor* has a lot of built-in fun
 
 
 TROUBLESHOOTING
----                 
+---
 
 * You'll need C++11 support on your compiler (See makefile notes below). For C++11 you'll want clang 3.2 (mac) or above or gcc 4.7 or above (linux).
 * Alternatively an earlier version of Versor is available at [github.com/wolftype/versor_1.0.git](https://github.com/wolftype/versor_1.0.git)
@@ -160,13 +160,13 @@ This older version runs just as fast, but is strictly 3D CGA (i.e. R4,1 metric) 
 INTRODUCTION
 ---
 
-_Versor_ provides operations and draw routines for Euclidean and Conformal Geometric Algebras, 
-a relatively new spatial computing model used by physicists, engineers, and artists. _Versor_ is designed to make graphical 
-experimentation of geometric algebra within a C++ environment easier. You can use this library to draw geometrical things, explore 
-spherical and hyperbolic spaces, transformations, design robots, etc. 
+_Versor_ provides operations and draw routines for Euclidean and Conformal Geometric Algebras,
+a relatively new spatial computing model used by physicists, engineers, and artists. _Versor_ is designed to make graphical
+experimentation of geometric algebra within a C++ environment easier. You can use this library to draw geometrical things, explore
+spherical and hyperbolic spaces, transformations, design robots, etc.
 I am using it for my PhD on bio-inspired engineering.
 
-I first developed _Versor_ while reading "Geometric Algebra for Computer Science" by Leo Dorst, Daniel Fontijne, and Stephen Mann. 
+I first developed _Versor_ while reading "Geometric Algebra for Computer Science" by Leo Dorst, Daniel Fontijne, and Stephen Mann.
 It's a fantastic book and if you're reading this you should also consider reading that.  
 
 
@@ -182,58 +182,58 @@ One quick word: clifford algebras and the spatial relationships they embody can 
 
 ---
 
-      
+
 ####BACKGROUND
-The homogenous 5D CGA model used here was initially proposed by David Hestenes, Hongbo Li, and Alan Rockwood in 2001, and given full form and weight through the excellent 
-and careful work of Leo Dorst, Joan and Anthony Lasenby, and Eduardo Bayro-Corrochano, and others.  These researchers' writings have helped me quite a bit.  CGA is particular breed of _Clifford Algebras_ (also known as Geometric Algebras), 
-which operate upon combinatoric hypercomplex vector spaces that emerged from William Clifford's attempt to fuse Hamilton's quaternions with Grassmans' extension algebras.  Thus 
-_transformations_ were married with a system of _abstraction_.  For more information, take a look at the [links](#links) to the sites at the bottom of 
+The homogenous 5D CGA model used here was initially proposed by David Hestenes, Hongbo Li, and Alan Rockwood in 2001, and given full form and weight through the excellent
+and careful work of Leo Dorst, Joan and Anthony Lasenby, and Eduardo Bayro-Corrochano, and others.  These researchers' writings have helped me quite a bit.  CGA is particular breed of _Clifford Algebras_ (also known as Geometric Algebras),
+which operate upon combinatoric hypercomplex vector spaces that emerged from William Clifford's attempt to fuse Hamilton's quaternions with Grassmans' extension algebras.  Thus
+_transformations_ were married with a system of _abstraction_.  For more information, take a look at the [links](#links) to the sites at the bottom of
 this page.  For instance, for practical applications in robotics and "Geometric Cybernetics", see Eduardo Bayro-Corrochano's work.  For some
-very helpful algorithms in rigid body dynamics and gravitational physics see the variety of publications by Joan and Anthony Lasenby.  To get at the beginning of it all, read David Hestenes' _New Foundations for Classical Mechanics_. 
+very helpful algorithms in rigid body dynamics and gravitational physics see the variety of publications by Joan and Anthony Lasenby.  To get at the beginning of it all, read David Hestenes' _New Foundations for Classical Mechanics_.
 
 
 
 ####SPEED
 Typical matrix operation libraries have templated inlined functions for Vector and Matrix multiplication.  Versor
 is similar, but on steroids, where _vectors_ and sparse _matrices_ of various sizes are all just called _multivectors_ and represent geometric
-elements beyond just xyz directions and transformation matrices. Circles, lines, spheres, planes, points are all algebraic elements, as are 
+elements beyond just xyz directions and transformation matrices. Circles, lines, spheres, planes, points are all algebraic elements, as are
 operators that spin, twist, dilate, and bend those variables.  Both these elements and operators are _multivectors_ which multiply together in many many many different ways.  
 
 
 ####What's new?
 
 Versor compiles much faster than before, and without any silly predetermined list
-of allowable operations or types.  Most notably, arbitrary metrics are now possible.  For example, 
+of allowable operations or types.  Most notably, arbitrary metrics are now possible.  For example,
 the xRoots.cpp example calculates all the Euclidean 4D reflections of a couple of point groups
 (F4 and D4, namely). So you can hypercube and polychoron away (8D cubes no problem!).  Number of dimensions
 allowed are somewhat limited by your compiler infrastructure -- let me know if you have a need that is not being met!
 
 As for CGA, all the Pnt, Vec, Dll notation remains as before, but i've started adding utility functions
-since it helps people out. 
+since it helps people out.
 
 
-	auto pa = Round::point( 1,0,0 ); 
-	auto pb = Round::point( 0,1,0 ); 
-	auto pc = Round::point(-1,0,0 ); 
+	auto pa = Round::point( 1,0,0 );
+	auto pb = Round::point( 0,1,0 );
+	auto pc = Round::point(-1,0,0 );
 	auto circle = pa ^ pb ^ pc;
-  
-	Draw(c); 
-  
+
+	Draw(c);
+
 ####How does it work?
 
 If you like functional template metaprogramming, take a look at the code
 and please let me know what you think.  If you don't, then I wouldn't . . .  
-But if you have ideas or questions please do not hesitate to contact me.   
+But if you have ideas or questions please do not hesitate to contact me.
 
-WHAT THE POINT IS 
+WHAT THE POINT IS
 ---
 
-GA combines many other maths (matrix, tensor, vector, and lie algebras). It is **holistic**. CGA uses a particular mapping (a conformal one) of 3D Euclidean space to a 
-4D sphere. Operations on that hypersphere are then projected back down to 3D. That how it works in a nutshell. 
+GA combines many other maths (matrix, tensor, vector, and lie algebras). It is **holistic**. CGA uses a particular mapping (a conformal one) of 3D Euclidean space to a
+4D sphere. Operations on that hypersphere are then projected back down to 3D. That how it works in a nutshell.
 
 A fuller treatment of this question (er, the question of why we do this) can be found in my [Master's thesis on the subject](http://wolftype.com/versor/colapinto_masters_final_02.pdf).  But basically,
 Geometic Algebra offers a particular richness of spatial expression.  Imagine needing glasses and not knowing you needed glasses.  Then, when you do get glasses, the world changes
-unexpectedly.  GA is like glasses for the inside of your brain.  _Conformal_ Geometric Algebra, especially the 5D variety enlisted here, are like x-ray glasses.  One 
+unexpectedly.  GA is like glasses for the inside of your brain.  _Conformal_ Geometric Algebra, especially the 5D variety enlisted here, are like x-ray glasses.  One
 point of clarification that occurs are **disambiguations** of previously collapsed concepts.  
 
 For instance, the main disambiguation, is that between a _Point_ in space and a _Vector_ in space.  
@@ -253,7 +253,7 @@ In mathematics, the inner product of two points `pa` and `pb` is written \\(p_{a
 	Point pa = Vec(1,0,0).null();
 	Point pb = Vec(-1,0,0).null();
 	Scalar squaredDist = ( pa <= pb ) * -2;
-	
+
 which in this case would return a Scalar value of `4`.  The `-2` is there since the inner product really returns **half the negative** squared distance.
 We can extract the Scalar into a c++ double like so:
 
@@ -284,19 +284,19 @@ Speaking of Spheres, we can also make spheres with a radius this way:
 or  
 
 	DualSphere dls = Round::dls( Vec( 1,0,0 ), 1 );
-	
+
 or, specifying the radius first and then the coordinate:  
 
 	DualSphere dls = Round::dls( 1 /* <--radius */ , 1,0,0 )
-	
-all of which give a dual sphere of radius 1 at coordinate 1,0,0; 
+
+all of which give a dual sphere of radius 1 at coordinate 1,0,0;
 
 
 BASICS
 ---
 
 _Versor_ is named after the one of the basic category of elements of geometric algebra.  
-A **versor** is a type of **multivector** which can be used to compose geometric transformations, 
+A **versor** is a type of **multivector** which can be used to compose geometric transformations,
 namely reflections, translations, rotations, twists, dilations, and transversions (special conformal transformations).
 
 More on all of those transformations later.  
@@ -306,7 +306,7 @@ In Versor, a `Vector` (or `Vec`) is a typical Euclidean 3D element.  It can be b
 	Vec v(1,2,3);
 
 Some built-in Vectors exist:
-	
+
 	Vec::x x; //<-- X Direction Unit Vector Vec(1,0,0)
 	Vec::y y; //<-- Y Direction Unit Vector Vec(0,1,0)
 	Vec::z z; //<-- Z Direction Unit Vector Vec(0,0,1)
@@ -324,34 +324,34 @@ Bivectors are also just three elements long, and are built the same way Vectors 
 	Biv b(1,2,3);
 
 Some built-in Bivectors exist:
-	
+
 	Biv::xy xy; //<-- XY Counterclockwise Unit Area Biv(1,0,0)
 	Biv::xz xy; //<-- XZ Counterclockwise Unit Area Biv(0,1,0)
 	Biv::yz xy; //<-- YZ Counterclockwise Unit Area Biv(0,0,1)
-	
+
 While it is perfectly valid to write `Vector`, `Bivector` and `Rotor`, you'll notice I've truncated them to their three letter nicknames, `Vec` and `Rot`.  
 That's up to you: Both long-name and nick-name versions are valid in libvsr (they are typedef'ed to each other).
 
 	Biv b = Biv::xy;
 	double theta = PIOVERTWO;
 	Vec v1 = Vec::x.rot( b * theta )
-	
+
 You can also generate rotors using `Gen::rot( <some bivector> )`  In fact, all transformations can be generated this way, and then later applied to arbitrary elements.
 For instance, `Motors` can be generated which translate and rotate an element at the same time.  This is also called a _twist_.
 
 	Motor m = gen::mot(<some dual line>); 	//<-- Makes A Twisting Motor around Some Dual Line
 	Point p = Vec(0,0,0).null().sp(m);		//<-- Applies above motor to a Point
-		
+
 You'll notice there are _dual_ versions of elements: as in a `DualLine` (or `Dll` for short).  That's because in the real world of abstract geometry, there are usually
 two ways of defining an element.  For instance, we can build a _direct_ `Line` on the Y-axis by wedging two points together, along with infinity:
-	
+
 	Line lin = Vec(0,0,0).null() ^ Vec(0,1,0).null() ^ Inf(1);
-	
+
 Or we can define a line by the bivector plane that it is normal to, and a support vector that determines how far away the line is from the origin.  To convert the above
 line into its dual representation, we just call the dual() method:
-	
+
 	Dll dll = lin.dual();
-	
+
 For those who are interested, this dual representation is isomorphic to the Plücker coordinates, which are used in screw theory to twist things around.  Here, too, we can use
 dual lines to generate transformations which twist things around them.
 
@@ -360,20 +360,20 @@ Gui
 ---
 
 The examples/*.cpp files include bindings to the GLV framework for windowing and user interface controls. This provides the minumum necessary glue to get started quickly building your own GA based graphics applications.
-    
+
 The interface has a built in gui, mouse info, and keyboard info stored.  
-    
+
 	Circle circle;
 	Touch(inteface, circle);
 	Draw(circle);
-	
+
 Putting the above code inside your application's `onDraw()` loop will enable you to click and modify geometric elements by hitting the "G", "R" and "S" keys.  
-Hit any other key to deselect all elements.   
+Hit any other key to deselect all elements.
 
 
 [**BUILT-IN INTERFACE**]
 
-|                                 |                                             | 
+|                                 |                                             |
 Key                                 | Response  
 ------------------------------      | ------------------------------------------  
 `~`                                 | Toggle full screen.  
@@ -382,18 +382,18 @@ Key                                 | Response
 `ALT` +`Arrow Keys`              	| Rotate the model view around.  
 `G`                                 | Grab an Element  
 `R`                                 | Rotate an Element  
-`S`                                 | Scale an Element 
-Any other key						| Release all Elements 
- 
+`S`                                 | Scale an Element
+Any other key						| Release all Elements
+
 
 
 OPERATORS
 ---
 
-The elements of the algebra are geometric entities (circles, planes, spheres, etc) and operators (rotations, translations, twists, etc) which 
+The elements of the algebra are geometric entities (circles, planes, spheres, etc) and operators (rotations, translations, twists, etc) which
 act on the elements of the algebra.  All are known as _multivectors_ since they are more than just your typical vectors.
 
-Multivector elements are most often combined using three overloaded binary operators: 
+Multivector elements are most often combined using three overloaded binary operators:
 
 The **Geometric** Product of elements `A` and `B`:  
 
@@ -435,7 +435,7 @@ returns \\(\tilde{A}\\)
 
 And finally, since I ran out of overloadable operators, some basic methods
 
-	A.conj() 
+	A.conj()
 
 which returns \\(\bar{A}\\)
 
@@ -460,10 +460,10 @@ In summary:
 ELEMENTS
 ---
 
-To make the process of writing code faster, all elements of the algebra are represented by types 3 letters long. 
+To make the process of writing code faster, all elements of the algebra are represented by types 3 letters long.
 Alternatively, you can also use the long-form name.
 
-[**BASIC ELEMENTS**]				  
+[**BASIC ELEMENTS**]
 Type  |  Long Form   		     |     Descrription                                                        |  
 ----- | ---------------- | :---------------------------------------------------------: |  
 _Euclidean_             ||  
@@ -488,7 +488,7 @@ _Flat_                  ||
 
 _Versors_               ||  
 `Rot` | `Rotor`          |            Spins an Element (as a Quaternion would)  
-`Trs` | `Translator`     |                     Translates an Element 
+`Trs` | `Translator`     |                     Translates an Element
 `Dil` | `Dilator`        |                       Dilates an Element  
 `Mot` | `Motor`          |                Twists an Element along an axis  
 `Trv` | `Transversor`    |                        Bends an Element about the Origin
@@ -500,11 +500,11 @@ _Abstract_              ||
 `Inf` | `Infinity`       |  
 
 
-There are others as well (for instance, affine planes, lines, and points) but the above are more than sufficient to start with. 
+There are others as well (for instance, affine planes, lines, and points) but the above are more than sufficient to start with.
 There are also built in macros, for instance  
 
-`EP`  			| Sphere At the Origin.   
-`EM`  			| Imaginary Sphere at the Origin.    
+`EP`  			| Sphere At the Origin.
+`EM`  			| Imaginary Sphere at the Origin.
 `PT(x,y,z)`  	| A null Point at x,y,z
 
 `EP` and `EM` can be invoked instead of `Inf` to work in non-Euclidean metrics ( Spherical and Hyperbolic, respectively)
@@ -534,9 +534,9 @@ COMMON CONFORMAL FUNCTIONS
 * `Tangent::` methods create or otherwise operate on **Tangent** elements (Tangent Vectors, Tangent Bivectors, Tangent Trivectors)
 
 
-GENERATORS 
+GENERATORS
 ---
-  
+
 |       |                                     |  
 Returns | Function                            | Description  
 ------- | ----------------------------------- | -------------------------------------------------  
@@ -547,7 +547,7 @@ Dil     | gen::dil( const Pnt& p, double amt );| //<-- Generate a Dilator from a
 Trv     | gen::trv( cont Tnv& v);             | //<-- Generate a Transveror from a Tangent Vector  
 Bst     | gen::bst( const Par& p);            | //<-- Generate a Booster from a Point Pair  
 
-   
+
 REFLECTIONS
 ---
 
@@ -557,8 +557,8 @@ In addition to the above "even" spinors, we can also reflect.  Reflections (in a
 	Pnt r = p.re( CXY(1) ); //Reflection of a point in a circle
 	r = r / r[3]; 			    //Renormalization of a point
 
-The re() method calculates `v.re(C)` as `C*v.inv()*~C` where inv() is an involution. With a versor `C` and an element `v` you might also try `C * v * !C`.  Inversion in a circle or a sphere may change the 
-weight of the element (for a Point at x, it will change it by x^2)        
+The re() method calculates `v.re(C)` as `C*v.inv()*~C` where inv() is an involution. With a versor `C` and an element `v` you might also try `C * v * !C`.  Inversion in a circle or a sphere may change the
+weight of the element (for a Point at x, it will change it by x^2)
 
 
 LINKS
@@ -579,6 +579,3 @@ PAPERS
 
 * 2011 [Versor: Spatial Computing With Conformal Geometric Algebra](http://wolftype.com/versor/colapinto_masters_final_02.pdf)
 * 2012 [Boosted Surfaces: Synthesis of Meshes using Point Pair Generators in the Conformal Model](http://versor.mat.ucsb.edu/Boosted_Surfaces_submission_0113.pdf)
-
-
-                                                                       
