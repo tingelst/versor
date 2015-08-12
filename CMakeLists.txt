@@ -38,48 +38,19 @@ file(GLOB VSR_SRCS src/space/*.cpp)
 if(BUILD_GRAPHICS)
   message("-- Build with graphics")
 
-  include(ExternalProject)
-  find_package(Git REQUIRED)
   find_package(OpenGL REQUIRED)
   find_package(GLEW REQUIRED)
   find_package(GLUT REQUIRED)
 
-  ExternalProject_Add(glv_library
-    PREFIX ${CMAKE_BINARY_DIR}/glv_library
-    GIT_REPOSITORY https://github.com/tingelst/GLV.git
-    GIT_TAG cmake
-    TIMEOUT 10
-    UPDATE_COMMAND ${GIT_EXECUTABLE} pull
-    CONFIGURE_COMMAND ${CMAKE_COMMAND} -DNO_EXAMPLES=ON ../glv_library
-    BUILD_COMMAND ${CMAKE_MAKE_PROGRAM}
-    INSTALL_COMMAND "")
-
-  ExternalProject_Get_Property(glv_library SOURCE_DIR)
-  set(GLV_INCLUDE_DIR ${SOURCE_DIR})
-  set(GLV_LIBRARY_PATH ${SOURCE_DIR}/build/lib/${CMAKE_FIND_LIBRARY_PREFIXES}GLV.a)
-  set(GLV_LIBRARY GLV)
-  add_library(${GLV_LIBRARY} STATIC IMPORTED GLOBAL)
-  set_property(TARGET ${GLV_LIBRARY} PROPERTY IMPORTED_LOCATION ${GLV_LIBRARY_PATH})
-  add_dependencies(${GLV_LIBRARY} glv_library)
-
-  ExternalProject_Add(gfx
-    PREFIX ${CMAKE_BINARY_DIR}/gfx
-    GIT_REPOSITORY https://github.com/tingelst/gfx.git 
-    GIT_TAG devel
-    TIMEOUT 10
-    UPDATE_COMMAND ${GIT_EXECUTABLE} pull
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND ""
-    INSTALL_COMMAND "")
-
-  ExternalProject_Get_Property(gfx SOURCE_DIR)
-  set(GFX_INCLUDE_DIR ${SOURCE_DIR})
-  set(GL2PS_DIR ${SOURCE_DIR}/gl2ps)
+  find_package(GLV REQUIRED)
+  find_package(gfx REQUIRED)
 
   include_directories(
     ${GLV_INCLUDE_DIR}
     ${GFX_INCLUDE_DIR}
-    ${GFX_INCLUDE_DIR}/gfx)
+    ${GFX_INCLUDE_DIR}/gfx
+    ${GLEW_INCLUDE_DIR}
+    )
 
   list(APPEND VSR_LIBRARY_DEPENDENCIES ${GLV_LIBRARY})
   list(APPEND VSR_LIBRARY_DEPENDENCIES ${GLUT_LIBRARY})
@@ -88,8 +59,9 @@ if(BUILD_GRAPHICS)
 
   file(GLOB VSR_GL_SRCS src/draw/GL/*.cpp)
   file(GLOB VSR_GLES_SRCS src/draw/GLES/*.cpp)
+  file(GLOB GL2PS_SRC ${GL2PS_DIR}/gl2ps.c)
   
-  set(GL2PS_SRC ${GL2PS_DIR}/gl2ps.c)
+  #set(GL2PS_SRC ${GL2PS_DIR}/gl2ps.c)
 
   add_library(${VSR_LIBRARY} ${VSR_SRCS} ${VSR_GL_SRCS} ${VSR_GLES_SRCS} ${GL2PS_SRC})
   target_link_libraries(${VSR_LIBRARY} ${VSR_LIBRARY_DEPENDENCIES})
