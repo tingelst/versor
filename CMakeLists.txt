@@ -25,16 +25,16 @@ set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} -Wno-switch -Wno-deprecated-declarations -Wno-int-to-pointer-cast")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U__STRICT_ANSI__")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nostdinc++")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ftemplate-depth-1200")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-switch -Wno-int-to-pointer-cast") 
 
 include_directories(
   include
   include/vsr/)
 
+set(VSR_LIBRARY vsr)
 file(GLOB VSR_SRCS src/space/*.cpp)
+
 if(BUILD_GRAPHICS)
   message("-- Build with graphics")
 
@@ -52,12 +52,10 @@ if(BUILD_GRAPHICS)
     UPDATE_COMMAND ${GIT_EXECUTABLE} pull
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -DNO_EXAMPLES=ON ../glv_library
     BUILD_COMMAND ${CMAKE_MAKE_PROGRAM}
-    INSTALL_COMMAND ""
-    )
+    INSTALL_COMMAND "")
 
   ExternalProject_Get_Property(glv_library SOURCE_DIR)
   set(GLV_INCLUDE_DIR ${SOURCE_DIR})
-  #ExternalProject_Get_Property(glv_library BINARY_DIR)
   set(GLV_LIBRARY_PATH ${SOURCE_DIR}/build/lib/${CMAKE_FIND_LIBRARY_PREFIXES}GLV.a)
   set(GLV_LIBRARY GLV)
   add_library(${GLV_LIBRARY} STATIC IMPORTED GLOBAL)
@@ -93,15 +91,12 @@ if(BUILD_GRAPHICS)
   
   set(GL2PS_SRC ${GL2PS_DIR}/gl2ps.c)
 
-  add_library(vsr ${VSR_SRCS} ${VSR_GL_SRCS} ${VSR_GLES_SRCS} ${GL2PS_SRC})
-  target_link_libraries(vsr ${VSR_LIBRARY_DEPENDENCIES})
-
-
-
+  add_library(${VSR_LIBRARY} ${VSR_SRCS} ${VSR_GL_SRCS} ${VSR_GLES_SRCS} ${GL2PS_SRC})
+  target_link_libraries(${VSR_LIBRARY} ${VSR_LIBRARY_DEPENDENCIES})
 
 else(BUILD_GRAPHICS)
   message("-- Do not build with graphics")
-  add_library(vsr ${VSR_SRCS})
+  add_library(${VSR_LIBRARY} ${VSR_SRCS})
 endif(BUILD_GRAPHICS)
 
 if (BUILD_EXAMPLES)
