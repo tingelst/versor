@@ -1,89 +1,126 @@
-#CMAKE FOR The Versor Geometric Algebra Mathematics Library 
+cmake_minimum_required(VERSION 2.6)
 
-#VERSION
-cmake_minimum_required(VERSION 2.8)
+project(Versor)
 
-#POLICIES
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 OLD)
-endif(COMMAND cmake_policy)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-#PROJECT
-project(VERSOR)
+set(VSR_VERSION_MAJOR 3)
+set(VSR_VERSION_MINOR 0)
+set(VSR_VERSION_PATCH 0)
+set(VSR_VERSION
+    ${VSR_VERSION_MAJOR}.${VSR_VERSION_MINOR}.${VSR_VERSION_PATCH})
+message("-- Building Versor ${VSR_VERSION_MAJOR}.${VSR_VERSION_MINOR}.${VSR_VERSION_PATCH}")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -U__STRICT_ANSI__ -O3 -ftemplate-depth-1200 -Wno-switch -Wno-deprecated-declarations -Wno-int-to-pointer-cast")
+option(BUILD_RASPBERRY "Build for Raspberry PI" OFF)
+option(BUILD_GRAPHICS "Build graphics" OFF)
+option(BUILD_EXAMPLES "Build examples" OFF)
+option(BUILD_TESTING "Enable tests" OFF)
+option(BUILD_DOCUMENTATION "Build User's Guide (html)" OFF)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U__STRICT_ANSI__ -nostdinc++ -O3 -ftemplate-depth-1200 -Wno-switch -Wno-int-to-pointer-cast") 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -U__STRICT_ANSI__")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth-1200")
+set(CMAKE_CXX_FLAGS 
+    "${CMAKE_CXX_FLAGS} -Wno-switch -Wno-deprecated-declarations -Wno-int-to-pointer-cast")
 
-#PROJECT INCLUDE AND LINK
-include_directories(${PROJECT_SOURCE_DIR})
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/include/vsr)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U__STRICT_ANSI__")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nostdinc++")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ftemplate-depth-1200")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-switch -Wno-int-to-pointer-cast") 
 
-file(GLOB core src/space/*.cpp)
+include_directories(
+  include
+  include/vsr/)
 
-add_library(vsr ${core})
-link_directories(${PROJECT_BINARY_DIR})
+file(GLOB VSR_SRCS src/space/*.cpp)
+if(BUILD_GRAPHICS)
+  message("-- Build with graphics")
 
-#CORE TEST TARGETS
-set( EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin )
-file(GLOB tests tests/*.cpp)
-foreach(filename ${tests})
-  get_filename_component(target ${filename} NAME_WE)
-  add_executable(${target} ${filename} )
-  target_link_libraries(${target} vsr )
-endforeach()
+  include(ExternalProject)
+  find_package(Git REQUIRED)
+  find_package(OpenGL REQUIRED)
+  find_package(GLEW REQUIRED)
+  find_package(GLUT REQUIRED)
 
-set(vsr_libraries vsr)
+  ExternalProject_Add(glv_library
+    PREFIX ${CMAKE_BINARY_DIR}/glv_library
+    GIT_REPOSITORY https://github.com/tingelst/GLV.git
+    GIT_TAG cmake
+    TIMEOUT 10
+    UPDATE_COMMAND ${GIT_EXECUTABLE} pull
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} -DNO_EXAMPLES=ON ../glv_library
+    BUILD_COMMAND ${CMAKE_MAKE_PROGRAM}
+    INSTALL_COMMAND ""
+    )
 
-if(${BUILD_GRAPHICS})
+  ExternalProject_Get_Property(glv_library SOURCE_DIR)
+  set(GLV_INCLUDE_DIR ${SOURCE_DIR})
+  #ExternalProject_Get_Property(glv_library BINARY_DIR)
+  set(GLV_LIBRARY_PATH ${SOURCE_DIR}/build/lib/${CMAKE_FIND_LIBRARY_PREFIXES}GLV.a)
+  set(GLV_LIBRARY GLV)
+  add_library(${GLV_LIBRARY} STATIC IMPORTED GLOBAL)
+  set_property(TARGET ${GLV_LIBRARY} PROPERTY IMPORTED_LOCATION ${GLV_LIBRARY_PATH})
+  add_dependencies(${GLV_LIBRARY} glv_library)
+
+  ExternalProject_Add(gfx
+    PREFIX ${CMAKE_BINARY_DIR}/gfx
+    GIT_REPOSITORY https://github.com/tingelst/gfx.git 
+    GIT_TAG devel
+    TIMEOUT 10
+    UPDATE_COMMAND ${GIT_EXECUTABLE} pull
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND "")
+
+  ExternalProject_Get_Property(gfx SOURCE_DIR)
+  set(GFX_INCLUDE_DIR ${SOURCE_DIR})
+  set(GL2PS_DIR ${SOURCE_DIR}/gl2ps)
+
+  include_directories(
+    ${GLV_INCLUDE_DIR}
+    ${GFX_INCLUDE_DIR}
+    ${GFX_INCLUDE_DIR}/gfx)
+
+  list(APPEND VSR_LIBRARY_DEPENDENCIES ${GLV_LIBRARY})
+  list(APPEND VSR_LIBRARY_DEPENDENCIES ${GLUT_LIBRARY})
+  list(APPEND VSR_LIBRARY_DEPENDENCIES ${OPENGL_LIBRARY})
+  list(APPEND VSR_LIBRARY_DEPENDENCIES ${GLEW_LIBRARY})
+
+  file(GLOB VSR_GL_SRCS src/draw/GL/*.cpp)
+  file(GLOB VSR_GLES_SRCS src/draw/GLES/*.cpp)
   
-  #OPTIONAL ADD GFX AS SUBDIRECTORY TO BUILD GRAPHICS DEMOS
-  add_subdirectory(ext/gfx)
+  set(GL2PS_SRC ${GL2PS_DIR}/gl2ps.c)
 
-  #GET INCLUDE DIRECTORIES, LINK DIRECTORIES, AND LINKED LIBS
-  get_property(GFX_LIBRARIES GLOBAL PROPERTY GFX_LIBRARIES)
-  get_property(GFX_INCLUDE_DIR GLOBAL PROPERTY GFX_INCLUDE_DIR)
-  get_property(GFX_LINK_DIR GLOBAL PROPERTY GFX_LINK_DIR)
-
-  include_directories(${GFX_INCLUDE_DIR})
-  link_directories(${GFX_LINK_DIR})
-
-  file(GLOB graphicsGL src/draw/GL/*.cpp)
-  file(GLOB graphicsGLES src/draw/GLES/*.cpp)
-
-  if(${RASPBERRY})
-    add_library(vsrGfx ${graphicsGLES}) 
-  else()
-    add_library(vsrGfx ${graphicsGL} ${graphicsGLES}) 
-  endif()
-
-  set(vsr_libraries  ${vsr_libraries} vsrGfx)
-  set(libraries ${vsr_libraries} ${GFX_LIBRARIES}  ) 
-
-  file(GLOB examples examples/*.cpp)
-  foreach(filename ${examples})
-    get_filename_component(target ${filename} NAME_WE)
-    add_executable(${target} ${filename} )
-    target_link_libraries(${target} ${libraries})
-  endforeach()
-
-endif()
-
-#PRINT DIRECTORIES
-get_property(link_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY LINK_DIRECTORIES)
-message("VERSOR LINK DIRECTORES")
-foreach(d ${link_dirs})
-  message(STATUS "link dir='${d}'")
-endforeach()
-get_property(inc_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message("VERSOR INCLUDE DIRECTORES")
-foreach(d ${inc_dirs})
-  message(STATUS "include dir='${d}'")
-endforeach()
-
-set_property(GLOBAL PROPERTY VSR_LIBRARIES ${vsr_libraries})
-set_property(GLOBAL PROPERTY VSR_INCLUDE_DIR "${inc_dirs}")
-set_property(GLOBAL PROPERTY VSR_LINK_DIR "${link_dirs}")
+  add_library(vsr ${VSR_SRCS} ${VSR_GL_SRCS} ${VSR_GLES_SRCS} ${GL2PS_SRC})
+  target_link_libraries(vsr ${VSR_LIBRARY_DEPENDENCIES})
 
 
+
+
+else(BUILD_GRAPHICS)
+  message("-- Do not build with graphics")
+  add_library(vsr ${VSR_SRCS})
+endif(BUILD_GRAPHICS)
+
+if (BUILD_EXAMPLES)
+  message("-- Build the examples")
+  add_subdirectory(examples)
+else (BUILD_EXAMPLES)
+  message("-- Do not build any example")
+endif (BUILD_EXAMPLES)
+
+if(BUILD_TESTING)
+  message("-- Build the tests.")
+else(BUILD_TESTING)
+  message("-- Do not build any tests")
+endif(BUILD_TESTING)
+
+if(BUILD_DOCUMENTATION)
+  message("-- Build the HTML documentation")
+else(BUILD_DOCUMENTATION)
+  message("-- Do not build the HTML documentation")
+endif(BUILD_DOCUMENTATION)
+
+install(FILES package.xml DESTINATION share/versor)

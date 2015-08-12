@@ -1,0 +1,22 @@
+<package>
+  <name>versor</name>
+  <version>0.0.1</version>
+  <description>
+    This package contains the versor library for geometric algebra
+  </description>
+  <author email="wolftype@gmail.com">Pablo Colapinto</author>
+  <maintainer email="lars.tingelstad@ntnu.no">Lars Tingelstad</maintainer>
+  <maintainer email="wolftype@gmail.com">Pablo Colapinto</maintainer>
+
+  <url>https://github.com/wolftype/versor</url>
+  <license>BSD</license>
+
+  <buildtool_depend>cmake</buildtool_depend>
+
+  <run_depend>catkin</run_depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+
+</package>
