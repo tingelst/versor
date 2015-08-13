@@ -74,7 +74,14 @@ endif(BUILD_GRAPHICS)
 
 if (BUILD_EXAMPLES)
   message("-- Build the examples")
-  add_subdirectory(examples)
+
+  file(GLOB EXAMPLE_SRCS examples/*.cpp)
+  foreach(EXAMPLE_SRC ${EXAMPLE_SRCS})
+    get_filename_component(TARGET ${EXAMPLE_SRC} NAME_WE)
+    add_executable(${TARGET} ${EXAMPLE_SRC} )
+    target_link_libraries(${TARGET} ${VSR_LIBRARY} )
+  endforeach()
+
 else (BUILD_EXAMPLES)
   message("-- Do not build any example")
 endif (BUILD_EXAMPLES)
@@ -103,8 +110,12 @@ install(TARGETS ${VSR_LIBRARY}
 export(TARGETS ${VSR_LIBRARY} FILE "${PROJECT_BINARY_DIR}/VersorTargets.cmake")
 export(PACKAGE ${VSR_LIBRARY})
 configure_file(cmake/VersorConfig.cmake.in
-    ${PROJECT_BINARY_DIR}/VersorConfig.cmake @ONLY)
-install(FILES ${PROJECT_BINARY_DIR}/VersorConfig.cmake DESTINATION share/versor)
+  ${PROJECT_BINARY_DIR}/VersorConfig.cmake @ONLY)
+install(FILES ${PROJECT_BINARY_DIR}/VersorConfig.cmake 
+  DESTINATION share/versor)
+
+install(FILES "${CMAKE_SOURCE_DIR}/cmake/FindGL2PS.cmake"
+  DESTINATION share/versor)
 
 install(EXPORT VersorTargets DESTINATION share/versor)
 install(FILES package.xml DESTINATION share/versor)

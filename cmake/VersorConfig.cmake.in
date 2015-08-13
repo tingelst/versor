@@ -11,4 +11,4 @@ if(NOT TARGET Versor)
     include("${SELF_DIR}/VersorTargets.cmake")
 endif()
 
-set(Versor_LIBRARIES vsr GLV)
+set(Versor_LIBRARIES vsr GLV gl2ps)
