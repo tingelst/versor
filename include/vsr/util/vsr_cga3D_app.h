@@ -29,7 +29,7 @@
 #include <gfx/util/gfx_glv_app.h>             //<-- an app class with built-in gui
 
 //GL2PS
-#include <gl2ps/gl2ps.h>
+#include <gl2ps.h>
 
 
 struct App : public gfx::GFXAppGui {
