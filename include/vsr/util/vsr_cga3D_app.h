@@ -20,19 +20,19 @@
 #ifndef  vsr_cga3D_app_INC
 #define  vsr_cga3D_app_INC
 
-#include "space/vsr_cga3D_op.h"               //<-- conformal 3D types and basic
+#include <vsr/space/vsr_cga3D_op.h>               //<-- conformal 3D types and basic
 
-#include "draw/vsr_cga3D_draw.h"              //<-- fixed pipeline draw routines
-#include "draw/vsr_cga3D_render.h"            //<-- programmable pipeline draw routines
+#include <vsr/draw/vsr_cga3D_draw.h>              //<-- fixed pipeline draw routines
+#include <vsr/draw/vsr_cga3D_render.h>            //<-- programmable pipeline draw routines
 
-#include "util/vsr_cga3D_control.h"           //<-- interface controls (mouse and keyboard)
-#include "gfx/util/gfx_glv_app.h"             //<-- an app class with built-in gui
+#include <vsr/util/vsr_cga3D_control.h>           //<-- interface controls (mouse and keyboard)
+#include <gfx/util/gfx_glv_app.h>             //<-- an app class with built-in gui
 
 //GL2PS
-#include "gl2ps/gl2ps.h"
+#include <gl2ps/gl2ps.h>
 
 
-struct App : public gfx::GFXAppGui {  
+struct App : public gfx::GFXAppGui {
 
   vsr::cga::Point mMouse2D;
   vsr::cga::Point mMouse3D;
@@ -44,52 +44,52 @@ struct App : public gfx::GFXAppGui {
 
     auto& vd = gfx::GFXAppGui::mContext.interface.io.viewdata;
     auto tv = vd.ray;
-    
+
     auto p = scene.unproject( io().pos(z) ); //vd.projectMid;
 
     Vec tz (tv[0], tv[1], tv[2] );
 
     mMouse2D =  vsr::cga::Construct::point(p[0],p[1],0);
     mMouse3D =  vsr::cga::Construct::point(p[0],p[1],p[2]);
-    mMouseRay = mMouse3D ^ tz ^ vsr::cga::Infinity(1); 
+    mMouseRay = mMouse3D ^ tz ^ vsr::cga::Infinity(1);
 
     //intersection of ray with plane
     mMouse3D = vsr::cga::Construct::meet( mMouseRay, vsr::cga::DualPlane(tz) );
 
     return mMouse3D;
- 
-  } 
-  
+
+  }
+
   /// Called when a keyboard key is pressed
   virtual void onKeyDown(const gfx::Keyboard& k){
     switch(k.code){
       case 'v':
-        printf("v\n"); 
+        printf("v\n");
         GL::enablePreset();
         scene.push(true);
         gl2ps();
         scene.pop(true);
         GL::disablePreset();
     }
-  } 
+  }
 
 
    void gl2ps(){
       static int id = 0;
       stringstream os; os << "output_" << id << (bShadedOutput ? ".eps" : ".pdf");
       id++;
-      
+
       FILE *fp;
       int state = GL2PS_OVERFLOW, buffsize = 0;
-      
+
       string name = os.str();
       fp = fopen(name.c_str(), "wb");
-      
+
       printf("writing %s to %s\n", os.str().c_str(), name.c_str() );
       GLint tv[4];
       glGetIntegerv(GL_VIEWPORT, tv);
-      
-      
+
+
       while(state == GL2PS_OVERFLOW){
 
          buffsize += 1024*1024;
@@ -110,17 +110,17 @@ struct App : public gfx::GFXAppGui {
          gl2psLineWidth(1);
 
 
-          
-          //DRAW 
+
+          //DRAW
           onDraw();
-          
+
           state = gl2psEndPage();
       }
-      
+
       fclose(fp);
       printf("Done!\n");
   }
-  
+
 
 };
 

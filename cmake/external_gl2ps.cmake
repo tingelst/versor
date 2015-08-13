@@ -1,10 +1,11 @@
 include(ExternalProject)
 ExternalProject_Add(gl2ps_library
   PREFIX ${CMAKE_BINARY_DIR}/gl2ps_library
-  SOURCE_DIR ../ext/gl2ps
+  SOURCE_DIR ${CMAKE_SOURCE_DIR}/ext/gl2ps
   CMAKE_ARGS -DENABLE_PNG=OFF -DENABLE_ZLIB=OFF
   UPDATE_COMMAND ""
-  INSTALL_COMMAND "")
+  INSTALL_COMMAND ""
+  )
 ExternalProject_Get_Property(gl2ps_library SOURCE_DIR)
 set(GL2PS_INCLUDE_DIR ${SOURCE_DIR})
 ExternalProject_Get_Property(gl2ps_library BINARY_DIR)

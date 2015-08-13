@@ -178,5 +178,4 @@ if(WIN32)
 else(WIN32)
   set(CPACK_GENERATOR TGZ)
 endif(WIN32)
-
 include(CPack)

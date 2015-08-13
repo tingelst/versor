@@ -1,6 +1,6 @@
 include(ExternalProject)
 ExternalProject_Add(gfx
-  SOURCE_DIR ../ext/gfx
+  SOURCE_DIR ${CMAKE_SOURCE_DIR}/ext/gfx
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
   INSTALL_COMMAND "")

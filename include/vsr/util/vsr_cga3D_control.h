@@ -19,44 +19,44 @@
 
 
 #ifndef VSR_CGA3D_CONTROL_H_INCLUDED
-#define VSR_CGA3D_CONTROL_H_INCLUDED        
+#define VSR_CGA3D_CONTROL_H_INCLUDED
 
 #include <sstream>
 
 #include "gfx/gfx_objectController.h"
 
-#include "space/vsr_cga3D_op.h" 
-#include "form/vsr_cga3D_frame.h" 
+#include "vsr/space/vsr_cga3D_op.h"
+#include "vsr/form/vsr_cga3D_frame.h"
 
-namespace gfx{    
-   
+namespace gfx{
+
   using namespace vsr;
-  using vsr::cga::Pnt; 
-  using vsr::cga::Point; 
-  using vsr::cga::Frame; 
-  using vsr::cga::Vec; 
-  using vsr::cga::Dll; 
-  using vsr::cga::Drv; 
-  using vsr::cga::Rot; 
+  using vsr::cga::Pnt;
+  using vsr::cga::Point;
+  using vsr::cga::Frame;
+  using vsr::cga::Vec;
+  using vsr::cga::Dll;
+  using vsr::cga::Drv;
+  using vsr::cga::Rot;
   using vsr::cga::Gen;
 
   //FOR ALL ROUND MULTIVECTOR TYPES:
-  template<class A>  
+  template<class A>
   Vec3f ObjectController :: ObjectPtr<A> :: worldPosition(){
     auto p = cga::Round::loc(*mAddress);
     return Vec3f(p[0],p[1],p[2]);
   }
 
   /// FOR FRAMES
-  template<>  
+  template<>
   Vec3f ObjectController :: ObjectPtr<Frame> :: worldPosition(){
     auto p = mAddress->pos();
     return Vec3f(p[0],p[1],p[2]);
   }
 
- 
+
   //FOR ALL MULTIVECTOR TYPES:
-  template<class A>  
+  template<class A>
   void ObjectController :: ObjectPtr<A> :: transform (){
 
       //Address of State
@@ -64,22 +64,22 @@ namespace gfx{
       //Temp Stored State
       A& ps = tObject;
 
-      //Center of Defining Sphere   
+      //Center of Defining Sphere
       Pnt pnt = cga::Round::loc(ts); //was pos
-              
+
       //2D coordinates of Defining Sphere
-      Vec3f sc = i->mScene->project(pos);  
+      Vec3f sc = i->mScene->project(pos);
 
           switch(i->io().keyboard.code){
 
               case 's': //SCALE
               {
 
-                  Vec3f tm1 = i->io().pos() - sc; 
-                  Vec3f tm2 = i->io().click() - sc; 
+                  Vec3f tm1 = i->io().pos() - sc;
+                  Vec3f tm2 = i->io().click() - sc;
 
-                  //Drag towards or away from element . . . 
-                  int neg = (tm1.len() > tm2.len()) ? 1 : -1; 
+                  //Drag towards or away from element . . .
+                  int neg = (tm1.len() > tm2.len()) ? 1 : -1;
                   float amt =  i->io().drag().len() * neg;
                   auto tsd = Gen::dil( pnt, amt);
 
@@ -88,13 +88,13 @@ namespace gfx{
                   break;
               }
               case 't': //TRANSLATE
-              {    
-                  Vec3f mdc = i->dragCat() * 10; 
-                  ts = ps.trs(  mdc[0], mdc[1], mdc[2] ); 
+              {
+                  Vec3f mdc = i->dragCat() * 10;
+                  ts = ps.trs(  mdc[0], mdc[1], mdc[2] );
                   break;
               }
-              case 'r': //ROTATE 
-              {    
+              case 'r': //ROTATE
+              {
                   auto b = i->axisCat();
                   Dll td = pnt <= (Drv(b[0], b[1], b[2]).dual() );
                   ts = ps.mot( td );
@@ -107,33 +107,33 @@ namespace gfx{
                   break;
               }
           }
-  
-  }  
+
+  }
 
 
     template<>
     void ObjectController :: ObjectPtr<Frame> :: transform() {
-     
+
       //Address of State
       Frame& ts = *mAddress;
       //Temp Stored State
       Frame& ps = tObject;
 
-      //Center  
+      //Center
       Pnt pnt = ps.pos();
-              
+
       //2D coordinates of Defining Sphere
-      Vec3f sc = i->mScene->project(pos);  
- 
+      Vec3f sc = i->mScene->project(pos);
+
 
         switch(i->io().keyboard.code){
           case 's': //SCALE
           {
-              Vec3f tm1 = i->io().pos() - sc; 
-              Vec3f tm2 = i->io().click() - sc; 
+              Vec3f tm1 = i->io().pos() - sc;
+              Vec3f tm2 = i->io().click() - sc;
 
-              //Drag towards or away from element . . . 
-              int neg = (tm1.len() > tm2.len()) ? 1 : -1; 
+              //Drag towards or away from element . . .
+              int neg = (tm1.len() > tm2.len()) ? 1 : -1;
               float amt =  i->io().drag().len() * neg;
               ts = ps.dilate( amt );
 
@@ -141,13 +141,13 @@ namespace gfx{
 
           }
           case 't': //TRANSLATE
-          {   
+          {
               Vec3f mdc = i->dragCat() * 10;
               ts.pos() = ps.pos().trs( mdc[0], mdc[1], mdc[2] );
               break;
           }
-          case 'r': //ROTATE 
-          {    
+          case 'r': //ROTATE
+          {
               auto b = i->axisCat();
               Rot tr = Gen::rot( Vec(b[0],b[1],b[2]).duale() );
               ts.rot() = tr * ps.rot();
@@ -164,7 +164,7 @@ namespace gfx{
     };
 
 
-}  
+}
 
 
 

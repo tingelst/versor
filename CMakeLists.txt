@@ -28,9 +28,9 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -U__STRICT_ANSI__")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-switch -Wno-int-to-pointer-cast") 
 
-include_directories(
-  include
-  include/vsr/)
+set(VSR_INCLUDE_DIRS include include/vsr)
+
+include_directories(${VSR_INCLUDE_DIRS})
 
 set(VSR_LIBRARY vsr)
 file(GLOB VSR_SRCS src/space/*.cpp)
@@ -47,11 +47,14 @@ if(BUILD_GRAPHICS)
   include(external_gfx)
   include(external_gl2ps)
 
-  include_directories(
+  set(VSR_INCLUDE_DIRS 
+    ${VSR_INCLUDE_DIRS} 
     ${GLV_INCLUDE_DIR}
     ${GFX_INCLUDE_DIRS}
     ${GL2PS_INCLUDE_DIR}
     ${GLEW_INCLUDE_DIR})
+
+  include_directories(${VSR_INCLUDE_DIRS})
 
   list(APPEND VSR_LIBRARY_DEPENDENCIES ${GL2PS_LIBRARY})
   list(APPEND VSR_LIBRARY_DEPENDENCIES ${GLV_LIBRARY})
@@ -90,4 +93,57 @@ else(BUILD_DOCUMENTATION)
   message("-- Do not build the HTML documentation")
 endif(BUILD_DOCUMENTATION)
 
+file(GLOB VSR_HDRS ${CMAKE_SOURCE_DIR}/include/vsr/*.h)
+install(FILES ${VSR_HDRS} DESTINATION include/vsr)
+file(GLOB VSR_DETAIL_HDRS ${CMAKE_SOURCE_DIR}/include/vsr/detail/*.h)
+install(FILES ${VSR_DETAIL_HDRS} DESTINATION include/vsr/detail)
+file(GLOB VSR_DRAW_HDRS ${CMAKE_SOURCE_DIR}/include/vsr/draw/*.h)
+install(FILES ${VSR_DRAW_HDRS} DESTINATION include/vsr/draw)
+file(GLOB VSR_FORM_HDRS ${CMAKE_SOURCE_DIR}/include/vsr/form/*.h)
+install(FILES ${VSR_FORM_HDRS} DESTINATION include/vsr/form)
+file(GLOB VSR_SPACE_HDRS ${CMAKE_SOURCE_DIR}/include/vsr/space/*.h)
+install(FILES ${VSR_SPACE_HDRS} DESTINATION include/vsr/space)
+file(GLOB VSR_UTIL_HDRS ${CMAKE_SOURCE_DIR}/include/vsr/util/*.h)
+install(FILES ${VSR_UTIL_HDRS} DESTINATION include/vsr/util)
+
+file(GLOB GFX_HDRS ${CMAKE_SOURCE_DIR}/ext/gfx/gfx/*.h)
+install(FILES ${GFX_HDRS} DESTINATION include/gfx/)
+file(GLOB GFX_UTIL_HDRS ${CMAKE_SOURCE_DIR}/ext/gfx/gfx/util/*.h
+  ${CMAKE_SOURCE_DIR}/ext/gfx/gfx/util/*.hpp)
+install(FILES ${GFX_UTIL_HDRS} DESTINATION include/gfx/util)
+
+file(GLOB GLV_HDRS ${CMAKE_SOURCE_DIR}/ext/glv/GLV/*.h)
+install(FILES ${GLV_HDRS} DESTINATION include/GLV/)
+
+file(GLOB GL2PS_HDRS ${CMAKE_SOURCE_DIR}/ext/gl2ps/*.h)
+install(FILES ${GL2PS_HDRS} DESTINATION include/gl2ps/)
+
+install(TARGETS ${VSR_LIBRARY}
+  EXPORT VersorTargets
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib${LIB_SUFFIX}
+  ARCHIVE DESTINATION lib${LIB_SUFFIX})
+
+#install(FILES ${PROJECT_BINARY_DIR}/libGLV.a 
+  #DESTINATION lib${LIB_SUFFIX})
+
+#install(TARGETS ${GLV_LIBRARY}
+  #EXPORT VersorTargets
+  #RUNTIME DESTINATION bin
+  #LIBRARY DESTINATION lib${LIB_SUFFIX}
+  #ARCHIVE DESTINATION lib${LIB_SUFFIX})
+
+#install(TARGETS ${GL2PS_LIBRARY}
+  #EXPORT VersorTargets
+  #RUNTIME DESTINATION bin
+  #LIBRARY DESTINATION lib${LIB_SUFFIX}
+  #ARCHIVE DESTINATION lib${LIB_SUFFIX})
+
+export(TARGETS ${VSR_LIBRARY} FILE "${PROJECT_BINARY_DIR}/VersorTargets.cmake")
+export(PACKAGE ${VSR_LIBRARY})
+configure_file(cmake/VersorConfig.cmake.in
+    ${PROJECT_BINARY_DIR}/VersorConfig.cmake @ONLY)
+install(FILES ${PROJECT_BINARY_DIR}/VersorConfig.cmake DESTINATION share/versor)
+
+install(EXPORT VersorTargets DESTINATION share/versor)
 install(FILES package.xml DESTINATION share/versor)
