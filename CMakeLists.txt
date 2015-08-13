@@ -42,16 +42,18 @@ if(BUILD_GRAPHICS)
   find_package(GLEW REQUIRED)
   find_package(GLUT REQUIRED)
 
-  find_package(GLV REQUIRED)
-  find_package(gfx REQUIRED)
+  # Build external libraries
+  include(external_glv)
+  include(external_gfx)
+  include(external_gl2ps)
 
   include_directories(
     ${GLV_INCLUDE_DIR}
-    ${GFX_INCLUDE_DIR}
-    ${GFX_INCLUDE_DIR}/gfx
-    ${GLEW_INCLUDE_DIR}
-    )
+    ${GFX_INCLUDE_DIRS}
+    ${GL2PS_INCLUDE_DIR}
+    ${GLEW_INCLUDE_DIR})
 
+  list(APPEND VSR_LIBRARY_DEPENDENCIES ${GL2PS_LIBRARY})
   list(APPEND VSR_LIBRARY_DEPENDENCIES ${GLV_LIBRARY})
   list(APPEND VSR_LIBRARY_DEPENDENCIES ${GLUT_LIBRARY})
   list(APPEND VSR_LIBRARY_DEPENDENCIES ${OPENGL_LIBRARY})
@@ -59,12 +61,10 @@ if(BUILD_GRAPHICS)
 
   file(GLOB VSR_GL_SRCS src/draw/GL/*.cpp)
   file(GLOB VSR_GLES_SRCS src/draw/GLES/*.cpp)
-  file(GLOB GL2PS_SRC ${GL2PS_DIR}/gl2ps.c)
-  
-  #set(GL2PS_SRC ${GL2PS_DIR}/gl2ps.c)
 
-  add_library(${VSR_LIBRARY} ${VSR_SRCS} ${VSR_GL_SRCS} ${VSR_GLES_SRCS} ${GL2PS_SRC})
+  add_library(${VSR_LIBRARY} ${VSR_SRCS} ${VSR_GL_SRCS} ${VSR_GLES_SRCS})
   target_link_libraries(${VSR_LIBRARY} ${VSR_LIBRARY_DEPENDENCIES})
+  add_dependencies(${VSR_LIBRARY} ${GL2PS_LIBRARY} ${GLV_LIBRARY})
 
 else(BUILD_GRAPHICS)
   message("-- Do not build with graphics")
