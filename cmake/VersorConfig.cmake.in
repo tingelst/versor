@@ -3,12 +3,16 @@
 #  versor_INCLUDE_DIRS - include directories for Versor
 #  versor_LIBRARIES    - libraries to link against for Versor
 
+find_package(GL2PS)
+
 # Compute paths
 get_filename_component(SELF_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-set(Versor_INCLUDE_DIRS "@VSR_INCLUDE_DIRS@;@CMAKE_INSTALL_PREFIX@/include;@CMAKE_INSTALL_PREFIX@/include/vsr")
+set(Versor_INCLUDE_DIRS
+  "@GL2PS_INCLUDE_DIR@;@VSR_INCLUDE_DIRS@;@CMAKE_INSTALL_PREFIX@/include;@CMAKE_INSTALL_PREFIX@/include/vsr")
 
 if(NOT TARGET Versor)
     include("${SELF_DIR}/VersorTargets.cmake")
 endif()
 
-set(Versor_LIBRARIES vsr GLV gl2ps)
+
+set(Versor_LIBRARIES vsr GLV ${GL2PS_LIBRARY})
