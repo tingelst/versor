@@ -32,12 +32,18 @@ namespace gfx{
 //    vsr::cga::Immediate(t);
 // }
 
-
- //Draw Routine
+ //Draw Routine (Immediate Mode)
  template<class A>
  void Draw( const A& s, float r = 1, float g = 1, float b = 1, float a = 1){
    render::begin(r,g,b,a);
-   render::draw(s);
+   render::draw(s); //defined in gfx_render.h
+ }
+
+ //Draw Routine (Immediate Mode)
+ template<class A>
+ void DrawB( const A& s, float r = 1, float g = 1, float b = 1, float a = 1){
+   render::begin(r,g,b,a);
+   render::drawB(s); //defined in gfx_render.h
  }
 
  //Draw Routine (Immediate Mode)
@@ -62,7 +68,7 @@ namespace gfx{
    *-----------------------------------------------------------------------------*/
 
   template<class T>
-  struct Renderable<vsr::Field<T>> : RenderableBase< vsr::Field<T> > {
+  struct Renderable<vsr::Field<T>,0> : RenderableBase< vsr::Field<T> > {
 
     static void DrawImmediate( const vsr::Field<T>& f){
       for (int i = 0; i < f.num(); ++i){
