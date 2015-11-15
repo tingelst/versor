@@ -1,42 +1,13 @@
-/*!
- * @file
+#ifndef VERSOR_VSR_DETAIL_ALGEBRA_H_
+#define VERSOR_VSR_DETAIL_ALGEBRA_H_
 
-    implementations of algebras (Euclidean, PQ-metric, and conformal)
-
-
- *       Filename:  vsr_algebra.h
- *
- *    Description:  algebra implementation (euclidean, metric, and conformal)
- *
- *        Version:  1.0
- *        Created:  04/07/2015 14:37:57
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  Pablo Colapinto (), gmail->wolftype
- *   Organization:  wolftype
- *
- *
- =====================================================================================
- */
-
-#ifndef vsr_algebra_INC
-#define vsr_algebra_INC
-
-#include "vsr_xlists.h"  ///<-- list processing functions
-#include "vsr_products.h"  ///<-- compile time processing of instructions ("arrows" or "morphisms")
+#include "vsr/detail/xlists.h"
+#include "vsr/detail/products.h"
 
 namespace vsr {
 
-// using metric = Metric;
-/*-----------------------------------------------------------------------------
- *  generates basis blade in dimension dim of grade
-
-    note: to do: guard again negative dimensions and negative grades
- *-----------------------------------------------------------------------------*/
-
-/// metafunction to construct a basis blade type from spatial dimension and
-/// subspace grade
+// metafunction to construct a basis blade type from spatial dimension and
+// subspace grade
 template <bits::type dim, bits::type grade>
 struct blade {
   using vec = typename vsr::Blade1<dim>::VEC;
@@ -44,13 +15,13 @@ struct blade {
   using type = typename EOProd<vec, sub>::basis;
 };
 
-/// limiting case of grade 0 (scalar)
+// limiting case of grade 0 (scalar)
 template <bits::type dim>
 struct blade<dim, 0> {
   using type = Basis<0>;
 };
 
-/// all blades within a spatial dim upto and including maxgrade
+// all blades within a spatial dim upto and including maxgrade
 template <bits::type dim, bits::type grade = dim>
 struct all_blades {
   using sub = typename all_blades<dim, grade - 1>::type;
@@ -58,7 +29,7 @@ struct all_blades {
   using type = typename ICat<one, sub>::Type;
 };
 
-/// limiting case of grade 0 (scalar)
+// limiting case of grade 0 (scalar)
 template <bits::type dim>
 struct all_blades<dim, 0> {
   using type = Basis<0>;
@@ -74,49 +45,44 @@ struct algebra_impl;
 template <class algebraimpl>
 struct named_types;
 
-/*!-----------------------------------------------------------------------------
-   An algebra instance is templated on:
+// An algebra instance is templated on:
 
-   metric_type: a metric (e.g. Metric<3,0> for euclidean 3 space or
- Metric<4,1,true> for conformal 5D space )
-   value_type:  a field value type (i.e. real, complex, or some other arithmetic
- element).
+// metric_type: a metric (e.g. Metric<3,0> for euclidean 3 space or
+// Metric<4,1,true> for conformal 5D space )
+// value_type:  a field value type (i.e. real, complex, or some other arithmetic
+// element).
 
-   The value type can be anything that commutatively multiplies and adds in a
- closed group,
-   allowing for tensor metrics C x C, etc a la Bott periodicity.
+// The value type can be anything that commutatively multiplies and adds in a
+// closed group,
+// allowing for tensor metrics C x C, etc a la Bott periodicity.
 
+// algebra is a vsr::algebra< vsr::metric< P, Q, bConformal>, value_t>
+// where:
+// P and Q are integers representing the **signature** of a diagonal
+// metric bConformal is a boolean value specifing whether the metric should be
+// split
 
-     algebra is a vsr::algebra< vsr::metric< P, Q, bConformal>, value_t>
-        where:
-        * P and Q are integers representing the **signature** of a diagonal
- metric
-        * bConformal is a boolean value specifing whether the metric should be
- **split**
+// For example:
+// using ega = vsr::algebra< metric<3>, float>;
 
-     For example:
-
-         using ega = vsr::algebra< metric<3>, float>;
-
- *-----------------------------------------------------------------------------*/
 template <class metric_type, class value_type>
 struct algebra {
-  using metric = metric_type;  ///<-- Metric, with signature, whether Euclidean,
-                               ///Projective, Conformal, etc
+  // Metric, with signature, whether Euclidean, Projective, Conformal, etc
+  using metric = metric_type;
 
-  using value_t = value_type;  ///<-- %Field over which Algebra is Defined (e.g.
-                               ///float, double, complex)
+  // Field over which Algebra is Defined (e.g. float, double, complex)
+  using value_t = value_type;
 
-  static const int dim =
-      metric::type::Num;  ///<-- Dimension of Algebra (2,3,4,5,etc)
+  // Dimension of Algebra (2,3,4,5,etc)
+  static const int dim = metric::type::Num;
 
-  /// a multivector is a monadic structure that wraps a basis with a bilinear
-  /// quadratic form
+  // A multivector is a monadic structure that wraps a basis with a bilinear
+  // quadratic form
   template <class B>
   using mv_t = Multivector<algebra<metric, value_t>, B>;
 
-  /// implementation details for dealing with conformal vs euclidean etc (in
-  /// vsr_algebra.h)
+  // implementation details for dealing with conformal vs euclidean etc (in
+  // algebra.h)
   using impl = algebra_impl<algebra<metric, value_t>, metric::is_euclidean,
                             metric::is_conformal>;
 
@@ -149,17 +115,15 @@ struct algebra {
   template <class A, class B>
   using ip_t = ip_lift_t<typename A::basis, typename B::basis>;
 
-  /*-----------------------------------------------------------------------------
-   *  Sum Functions
-   *-----------------------------------------------------------------------------*/
-  /// Sum of Similar types
+  // Sum of similar types
   template <class B>
   static mv_t<B> sum(const mv_t<B>& a, const mv_t<B>& b) {
     mv_t<B> c;
     for (int i = 0; i < B::Num; ++i) c[i] = a[i] + b[i];
     return c;
   }
-  /// Difference of Similar types
+
+  // Difference of similar types
   template <class B>
   static mv_t<B> diff(const mv_t<B>& a, const mv_t<B>& b) {
     mv_t<B> c;
@@ -167,14 +131,15 @@ struct algebra {
     return c;
   }
 
-  /// Sum of Different types
+  // Sum of different types
   template <class B1, class B2>
   static mv_t<typename ICat<typename NotType<B1, B2>::Type, B1>::Type> sum(
       const mv_t<B1>& a, const mv_t<B2>& b) {
     typedef mv_t<typename ICat<typename NotType<B1, B2>::Type, B1>::Type> Ret;
     return sum(a.template cast<Ret>(), b.template cast<Ret>());
   }
-  /// Difference of Different types
+
+  // Difference of different types
   template <class B1, class B2>
   static mv_t<typename ICat<typename NotType<B1, B2>::Type, B1>::Type> diff(
       const mv_t<B1>& a, const mv_t<B2>& b) {
@@ -182,7 +147,7 @@ struct algebra {
     return diff(a.template cast<Ret>(), b.template cast<Ret>());
   }
 
-  /// Sum some scalar value
+  // Sum some scalar value
   template <class B>
   static mv_t<
       typename ICat<typename NotType<Basis<0>, B>::Type, Basis<0>>::Type>
@@ -192,9 +157,7 @@ struct algebra {
     return sum(Ret(a), b.template cast<Ret>());
   }
 
-  /*-----------------------------------------------------------------------------
-   *  Product Functions (unknown return type)
-   *-----------------------------------------------------------------------------*/
+  // Product Functions (unknown return type)
   template <class A, class B>
   static constexpr auto gp(const A& a, const B& b) -> gp_t<A, B> {
     typedef typename impl::template gp_arrow_t<typename A::basis,
@@ -202,6 +165,7 @@ struct algebra {
     typedef mv_t<typename x::basis> type;
     return x::Arrow::template Make<type>(a, b);
   }
+
   template <class A, class B>
   static constexpr auto op(const A& a, const B& b) -> op_t<A, B> {
     typedef typename impl::template op_arrow_t<typename A::basis,
@@ -209,6 +173,7 @@ struct algebra {
     typedef mv_t<typename x::basis> type;
     return x::Arrow::template Make<type>(a, b);
   }
+
   template <class A, class B>
   static constexpr auto ip(const A& a, const B& b) -> ip_t<A, B> {
     typedef typename impl::template ip_arrow_t<typename A::basis,
@@ -217,19 +182,17 @@ struct algebra {
     return x::Arrow::template Make<type>(a, b);
   }
 
-  /// Spin a by b, return type a
+  // Spin a by b, return type a
   template <class A, class B>
   static constexpr A spin(const A& a, const B& b) {
     typedef gp_basis_t<typename B::basis, typename A::basis> tmp_basis;
-    //............................................lh...........rh.................return
-    //type
     using x = typename impl::template rot_arrow_t<tmp_basis, typename B::basis,
                                                   typename A::basis>;
     return x::Arrow::template Make<A>(
         gp(b, a), Reverse<typename B::basis>::Type::template Make(b));
   }
 
-  /// Reflect a by b, return type a
+  // Reflect a by b, return type a
   template <class A, class B>
   static constexpr A reflect(const A& a, const B& b) {
     typedef gp_basis_t<typename B::basis, typename A::basis> tmp_basis;
@@ -240,48 +203,46 @@ struct algebra {
         Reverse<typename B::basis>::Type::template Make(b));
   }
 
-  /// make a type from sum of basis B1 and B2
+  // Make a type from sum of basis B1 and B2
   template <typename B1, typename B2>
   using make_sum = sum_lift_t<B1, B2>;
 
-  /// make a type from geometric product of basis B1 and B2
+  // Make a type from geometric product of basis B1 and B2
   template <typename B1, typename B2>
   using make_gp = gp_lift_t<B1, B2>;
 
-  /// make a type from outer product of basis B1 and B2
+  // Make a type from outer product of basis B1 and B2
   template <typename B1, typename B2>
   using make_op = op_lift_t<B1, B2>;
 
-  /// make a type from inner product of basis B1 and B2
+  // Make a type from inner product of basis B1 and B2
   template <typename B1, typename B2>
   using make_ip = ip_lift_t<B1, B2>;
 
-  /// make a type from a grade
+  // Make a type from a grade
   template <bits::type grade>
   using make_grade = mv_t<typename blade<dim, grade>::type>;
 
-  /// certain prenamed types in euclidean and conformal
+  // Certain prenamed types in euclidean and conformal
   using types = named_types<impl>;
 
-  /// Next Higher Algebra over the same field
+  // Next Higher Algebra over the same field
   using up = algebra<typename metric::up, value_t>;
 
-  using vector_basis =
-      typename blade<dim, 1>::type;  ///<-- 1-blade vector basis (no data)
-  using vec = mv_t<vector_basis>;    ///<-- 1-blade vector type  (stores data)
+  // 1-blade vector basis (no data)
+  using vector_basis = typename blade<dim, 1>::type;
+
+  // 1-blade vector type (stores data)
+  using vec = mv_t<vector_basis>;
 };
 
-/*-----------------------------------------------------------------------------
-*  ALGEBRA SPECIFIC PRODUCTS
-*-----------------------------------------------------------------------------*/
+// Algebra specific products
 template <typename Algebra, bool Euclidean, bool Conformal>
 struct algebra_impl {
   // using algebra = Algebra;
 };
 
-/*-----------------------------------------------------------------------------
- *  EUCLIDEAN (NO NEGATIVE METRIC)
- *-----------------------------------------------------------------------------*/
+// Euclidean metric
 template <typename Algebra>
 struct algebra_impl<Algebra, true, false> {
   //  static const bits::type dim = Algebra::dim;
@@ -297,9 +258,7 @@ struct algebra_impl<Algebra, true, false> {
   using rot_arrow_t = REGProd<R, A, B>;
 };
 
-/*-----------------------------------------------------------------------------
- *  Metric Product Functions (e.g for spacetime algebra)
- *-----------------------------------------------------------------------------*/
+// Metric product functions
 template <typename Algebra>
 struct algebra_impl<Algebra, false, false> {
   using algebra = Algebra;
@@ -317,9 +276,7 @@ struct algebra_impl<Algebra, false, false> {
   using rot_arrow_t = RMGProd<R, A, B, metric_type>;
 };
 
-/*-----------------------------------------------------------------------------
- *  CONFORMAL
- *-----------------------------------------------------------------------------*/
+// Conformal metric
 template <typename Algebra>
 struct algebra_impl<Algebra, false, true> {
   using metric_type = typename Algebra::metric::type;
@@ -336,9 +293,7 @@ struct algebra_impl<Algebra, false, true> {
   using rot_arrow_t = RCGProd<R, A, B, metric_type>;
 };
 
-/*-----------------------------------------------------------------------------
- *  Default Metric Types don't exist . . . use ::vector
- *-----------------------------------------------------------------------------*/
+//  Default metric types don't exist. Use ::vector
 template <typename A>
 struct named_types {
   using alg = typename A::algebra;
@@ -356,12 +311,10 @@ struct named_types {
   using rot = typename alg::template sum_basis_t<biv, sca>;
 };
 
-/*-----------------------------------------------------------------------------
- *  Default Euclidean Basis Types (specialize named_types to your own needs)
- *-----------------------------------------------------------------------------*/
+// Default Euclidean basis types (specialize named_types to your own needs)
 template <typename alg>
 struct named_types<algebra_impl<alg, true, false>> {
-  using algebra = alg;  // AlgebraImpl<alg,true,false>;
+  using algebra = alg;
 
   // use as e<1,2,3> will return e123 blade
   template <bits::type... N>
@@ -377,7 +330,6 @@ struct named_types<algebra_impl<alg, true, false>> {
   using rot = typename algebra::template sum_basis_t<biv, sca>;
   using euc = pss;  // necessary redundancy to avoid errors when compiling
                     // euclidean duale() method
-
   using Sca = Multivector<alg, sca>;
   using Pss = Multivector<alg, pss>;
   using Vec = Multivector<alg, vec>;
@@ -403,12 +355,11 @@ struct named_types<algebra_impl<alg, true, false>> {
   using pseudoscalar = Multivector<alg, pseudoscalar_basis>;
 };
 
-/*-----------------------------------------------------------------------------
- *  Default Conformal Basis Types
- *-----------------------------------------------------------------------------*/
+// Default Conformal Basis Types
 template <typename alg>
 struct named_types<algebra_impl<alg, false, true>> {
-  using algebra = alg;  // AlgebraImpl<alg,false,true>;
+  using algebra = alg;
+
   // use as e<1,2,3> will return e123 blade
   template <bits::type... N>
   using e = Basis<bits::blade((1 << (N - 1))...)>;
@@ -450,7 +401,7 @@ struct named_types<algebra_impl<alg, false, true>> {
   using con = typename algebra::template gp_basis_t<par, par>;
   using dls = pnt;
 
-  // MULTIVECTORS
+  // Multivectors
   using Sca = Multivector<alg, sca>;
   using Pss = Multivector<alg, pss>;
   using Euc = Multivector<alg, euc>;
@@ -556,4 +507,4 @@ struct named_types<algebra_impl<alg, false, true>> {
 
 }  // vsr::
 
-#endif /* ----- #ifndef vsr_algebra_INC  ----- */
+#endif  // VERSOR_VSR_DETAIL_ALGEBRA_H_

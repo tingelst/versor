@@ -1,20 +1,7 @@
+#ifndef VERSOR_VSR_DETAIL_INSTRUCTIONS_H_
+#define VERSOR_VSR_DETAIL_INSTRUCTIONS_H_
 
-/*! @file
-
-      arrow tokens (deep implementation detail)
-
- *  VERSOR
- *
- *  Author: Pablo Colapinto
- *  Gmail:  wolftype
- *  homepage: versor.mat.ucsb.edu
- *
- * */
-
-#ifndef INSTRUCTIONS_H_INCLUDED
-#define INSTRUCTIONS_H_INCLUDED
-
-#include "vsr_basis.h"
+#include "basis.h"
 
 namespace vsr {
 
@@ -186,4 +173,5 @@ struct InstCast<-1> {
 };
 }
 
-#endif
+#endif // VERSOR_VSR_DETAIL_INSTRUCTIONS_H_
+

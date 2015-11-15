@@ -1,47 +1,12 @@
-/*
- *
- =====================================================================================
- *
- *       Filename:  vsr_xlists.h
- *
- *    Description:  compile-time list processing: basis blade lists,
- concatenation, execution lists,
-                    reduction of lists to return types,
-                    and finding and indexing
- *
- *        Version:  1.0
- *        Created:  03/10/2014 12:16:51
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  Pablo Colapinto (), gmail -> wolftype
- *   Organization:  wolftype
- *
- *
- =====================================================================================
- */
-
-/*! @file
-
-     Compile-time list processing basics (see also vsr_lisp.h)
-
- *  VERSOR
- *
- *  Author: Pablo Colapinto
- *  Gmail:  wolftype
- *  homepage: versor.mat.ucsb.edu
- *
- * */
-
-#ifndef LISTS_H_INCLUDED
-#define LISTS_H_INCLUDED
+#ifndef VERSOR_VSR_DETAIL_XLISTS_H_
+#define VERSOR_VSR_DETAIL_XLISTS_H_
 
 #include <stdio.h>
 #include <bitset>
 #include <iostream>
 
-#include "vsr_basis.h"
-#include "vsr_instructions.h"
+#include "basis.h"
+#include "instructions.h"
 
 using namespace std;
 
@@ -645,4 +610,4 @@ struct VPrint {
 
 }  // vsr::
 
-#endif
+#endif  // VERSOR_VSR_DETAIL_XLISTS_H_

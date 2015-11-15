@@ -1,57 +1,27 @@
-/*! @file
-    generic multivector class, templated on a geometric algebra and a field
+#ifndef VERSOR_VSR_DETAIL_MULTIVECTOR_H_
+#define VERSOR_VSR_DETAIL_MULTIVECTOR_H_
 
-    using Vec = vsr::algebra< metric<3>, float>::types::Vec;
-    Vec v(1,0,0);
-
- *
- =====================================================================================
- *
- *       Filename:  vsr_multivector.h
- *
- *    Description:  generic multivector class, templated on a geometric algebra
- and a field
- *
- *        Version:  1.0
- *        Created:  04/07/2015 15:54:28
- *       Revision:  none
- *       Compiler:  gcc4.7 or above or clang 3.2 or above
- *
- *         Author:  Pablo Colapinto (), gmail->wolftype
- *   Organization:  wolftype
- *
- *
- =====================================================================================
- */
-
-#ifndef MV_H_INCLUDED
-#define MV_H_INCLUDED
-
-#include "vsr_algebra.h"  //<-- algebra implementation details (EGA, MGA, CGA)
+#include "algebra.h"
 
 #include <math.h>
 #include <iostream>
 
-/*!-----------------------------------------------------------------------------
- *  the **versor** library namespace
-
- *-----------------------------------------------------------------------------*/
 namespace vsr {
-/*!
-*  Generic Geometric Number Types (templated on an algebra and a basis )
 
-     Multivector is the main value-storing class.  All Geometric Algebra Types
-     are template instantiations of this class.
+// Generic Geometric Number Types (templated on an algebra and a basis )
+//
+// Multivector is the main value-storing class.  All Geometric Algebra Types
+// are template instantiations of this class.
+//
+// The types of **values** contained here (float, double, etc) are
+// deterimined by the algebra.  The way in which the data is combined with
+// other
+// methods is determined by their respective basis, in coordination with the
+// algebra.
 
-     The types of **values** contained here (float, double, etc) are
-     deterimined by the algebra.  The way in which the data is combined with
-other
-     methods is determined by their respective basis, in coordination with the
-algebra.
-
-*/
 template <typename algebra_type, typename basis_type>
 struct Multivector {
+
   using algebra = algebra_type;  ///< \ref algebra (a metric and field)
   using basis = basis_type;  ///< basis is an algebraic data type created with
   /// compile-time list processing
@@ -770,4 +740,4 @@ using conformal_Con = GACon<conformal<N, T>>;
 
 }  // vsr::
 
-#endif
+#endif // VERSOR_VSR_DETAIL_MULTIVECTOR_H_
